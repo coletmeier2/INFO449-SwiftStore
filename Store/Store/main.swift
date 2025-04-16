@@ -10,6 +10,7 @@ import Foundation
 protocol SKU {
     var name: String { get }
     func price() -> Int
+    func setPrice(_ newPrice: Int)
 }
 
 class Item: SKU {
@@ -23,6 +24,10 @@ class Item: SKU {
 
     func price() -> Int {
         return priceEach
+    }
+    
+    func setPrice(_ newPrice: Int) {
+        priceEach = newPrice
     }
 }
 
@@ -85,17 +90,30 @@ class Register {
     
     func twoForOne(_ saleItem: String) {
         var itemCounter = 0
-        var indexToRemove: Int?
         
-        for (index, item) in receipt.items().enumerated() {
+        for item in receipt.items() {
             if item.name == saleItem && itemCounter == 2 {
-                indexToRemove = index
+                item.setPrice(000)
                 itemCounter = 0
-                receipt.itemsList.remove(at: indexToRemove!)
-                let newItem = Item(name: item.name, priceEach: 000)
-                receipt.addItem(newItem)
             } else if item.name == saleItem {
                 itemCounter += 1
+            }
+        }
+    }
+}
+
+class Coupons {
+    var discountedItem: String
+    
+    init(discountedItem: String) {
+        self.discountedItem = discountedItem
+    }
+    
+    func applyDiscount(_ register: inout Register) {
+        for item in register.receipt.itemsList {
+            if item.name == discountedItem {
+                item.setPrice(Int(Double(item.price()) * 0.85))
+                break
             }
         }
     }
