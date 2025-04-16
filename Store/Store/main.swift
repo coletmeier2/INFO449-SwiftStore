@@ -82,6 +82,23 @@ class Register {
         self.receipt = Receipt()
         return completed
     }
+    
+    func twoForOne(_ saleItem: String) {
+        var itemCounter = 0
+        var indexToRemove: Int?
+        
+        for (index, item) in receipt.items().enumerated() {
+            if item.name == saleItem && itemCounter == 2 {
+                indexToRemove = index
+                itemCounter = 0
+                receipt.itemsList.remove(at: indexToRemove!)
+                let newItem = Item(name: item.name, priceEach: 000)
+                receipt.addItem(newItem)
+            } else if item.name == saleItem {
+                itemCounter += 1
+            }
+        }
+    }
 }
 
 class Store {
